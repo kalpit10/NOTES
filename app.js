@@ -153,11 +153,8 @@ let port = process.env.PORT; //heroku steps
 if (port == null || port == "") {
   port = 3000;
 }
-app.listen(port);
-
-
 
 app.listen(port, function(err){    //new way of starting the server
     if (err) console.log("Error in server setup");
-    console.log("Server listening on Port", port);
+    console.log("Server listening on Port");
 })
