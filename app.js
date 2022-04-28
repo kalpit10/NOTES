@@ -149,9 +149,15 @@ app.post("/work", function(req, res){
   res.redirect("/work");
 });
 
-var PORT = 3000;
+let port = process.env.PORT; //heroku steps
+if (port == null || port == "") {
+  port = 3000;
+}
+app.listen(port);
 
-app.listen(PORT, function(err){    //new way of starting the server
+
+
+app.listen(port, function(err){    //new way of starting the server
     if (err) console.log("Error in server setup");
-    console.log("Server listening on Port", PORT);
+    console.log("Server listening on Port", port);
 })
