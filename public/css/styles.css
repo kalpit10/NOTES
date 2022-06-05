@@ -94,3 +94,19 @@ footer {
   color: rgba(0, 0, 0, 0.5);
   text-align: center;
 }
+
+
+
+/*Login/Register CSS*/
+
+.centered {
+    padding-top: 200px;
+    text-align: center;
+}
+
+.secret-text {
+  text-align: center;
+  font-size: 2rem;
+  color: #fff;
+  background-color: #000;
+}
