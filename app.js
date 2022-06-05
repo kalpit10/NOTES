@@ -69,7 +69,7 @@ passport.deserializeUser(function(id, done) {
 passport.use(new GoogleStrategy({  //documentation for passportjs oauth20
     clientID: process.env.CLIENT_ID,
     clientSecret: process.env.CLIENT_SECRET,
-    callbackURL: "http://localhost:3000/auth/google/list"   //redirected url link that we created in credentials
+    callbackURL: "https://stormy-depths-00269.herokuapp.com/auth/google/list"   //redirected url link that we created in credentials
   },
   function(accessToken, refreshToken, profile, cb){  //accessToken allows to get data related to that user,refreshToken allows to use the data for a longer period of time and their profile
           console.log(profile);
