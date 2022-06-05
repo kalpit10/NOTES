@@ -1,19 +1,19 @@
 html {
-  background-color: #E4E9FD;
+  background-color: #E4E9FD!important;
   background-image: -webkit-linear-gradient(65deg, #A683E3 50%, #E4E9FD 50%);
   min-height: 1000px;
   font-family: 'helvetica neue';
 }
 
-h1 {
-  color: #fff;
+#display-3 {
+  color: #4FC3F5 ;
   padding: 10px;
 }
 
 .box {
   max-width: 400px;
   margin: 50px auto;
-  background: white;
+  background: #edb9b9;
   border-radius: 5px;
   box-shadow: 5px 5px 15px -5px rgba(0, 0, 0, 0.3);
 }
@@ -90,7 +90,7 @@ input[type="text"]:focus {
 }
 
 footer {
-  color: white;
+  color: #b48f8f !important;
   color: rgba(0, 0, 0, 0.5);
   text-align: center;
 }

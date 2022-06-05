@@ -27,8 +27,8 @@ app.use(session({    //check documentation
 app.use(passport.initialize());  //we tell our app to initialize passport package
 app.use(passport.session());   //and to also use passport for dealing with the sessions
 
-mongoose.connect("mongodb://localhost:27017/todolistDB", {useNewUrlParser: true}); //useNewUrlParser is written to skip errors that mongodb shows
-//mongoose.connect("mongodb+srv://kalpit07:Nvidiagtx1650@cluster0.vnk2x.mongodb.net/todolistDB?retryWrites=true&w=majority", {useNewUrlParser: true});
+// mongoose.connect("mongodb://localhost:27017/todolistDB", {useNewUrlParser: true}); //useNewUrlParser is written to skip errors that mongodb shows
+mongoose.connect("mongodb+srv://kalpit07:Nvidiagtx1650@cluster0.vnk2x.mongodb.net/todolistDB?retryWrites=true&w=majority", {useNewUrlParser: true});
 
 
 //FOR USING BUTTONS FOR GOOGLE, FACEBOOK ETC WHEN LOGIN GO TO SOCIALBUTTONS FOR BOOTSTRAP AND DOWNLOAD THAT ZIP FILE AND DRAG THE FILE OF BOOTSTRAP SOCAIL.CSS IN THE CSS FOLDER.
@@ -37,7 +37,13 @@ mongoose.connect("mongodb://localhost:27017/todolistDB", {useNewUrlParser: true}
 const userSchema = new mongoose.Schema({  //new definition because of mongoose encryption
   email: String,
   password: String,
-  googleID: String
+  googleID: {
+    type: String,
+      require: true,
+      index:true,
+      unique:true,
+      sparse:true
+  }
 });
 
 userSchema.plugin(passportLocalMongoose);
@@ -63,14 +69,14 @@ passport.deserializeUser(function(id, done) {
 passport.use(new GoogleStrategy({  //documentation for passportjs oauth20
     clientID: process.env.CLIENT_ID,
     clientSecret: process.env.CLIENT_SECRET,
-    callbackURL: "https://localhost:3000/auth/google/list"   //redirected url link that we created in credentials
+    callbackURL: "http://localhost:3000/auth/google/list"   //redirected url link that we created in credentials
   },
   function(accessToken, refreshToken, profile, cb){  //accessToken allows to get data related to that user,refreshToken allows to use the data for a longer period of time and their profile
           console.log(profile);
           //install and require find or create to make following function work
           User.findOrCreate({    //we first find the google id of that profile if it is there then bingo! if not then create one.
               googleId: profile.id,
-              username: profile.emails[0].value
+              username: profile.displayName //changes here from udemy doubts section
           }, function(err, user){
               return cb(err, user);  //findOrCreate is a made up function made by passportjs and we will not be able to find the documentation for the same. there is a npm package so that this function works we need to install it.
           });
@@ -108,8 +114,12 @@ const listSchema = {
 
 const List = mongoose.model("List", listSchema);
 
-
 app.get("/", function(req, res){
+  res.render("home");
+});
+
+
+app.get("/list", function(req, res){
 
 Item.find({}, function(err, foundItems) {
 
@@ -121,7 +131,7 @@ if(foundItems.length === 0){  //if we have 0 items then we insert 3 new items in
       console.log("Success");
     }
   });
-  res.redirect("/");
+  res.redirect("/list");
 }else{
     res.render("list", {listTitle: "Today", newListItems: foundItems});  //find us everthing that is in our items collection
 }
@@ -130,10 +140,11 @@ if(foundItems.length === 0){  //if we have 0 items then we insert 3 new items in
 
 });
 
+//type of authentication is GoogleStrategy and scope tells us that we want user's profile
+app.route("/auth/google")
+  .get(passport.authenticate('google', { scope: ['profile']
+  }));
 
-app.get("/auth/google",
-  passport.authenticate('google', { scope: ["profile"] })  //type of authentication is GoogleStrategy and scope tells us that we want user's profile
-);
 
 app.get("/auth/google/list",
   passport.authenticate("google", { failureRedirect: "/login" }),
@@ -166,7 +177,7 @@ app.get("/:customListName", function(req, res){  //if we want any list for user 
       });
 
       list.save();
-      res.redirect("/" + customListName);  //when we will laod to a custom page it will redirect to customListName page only.
+      res.redirect("/list" + customListName);  //when we will laod to a custom page it will redirect to customListName page only.
       }else{
       //Show an existing list
       res.render("list", {listTitle: foundList.name, newListItems: foundList.items});
@@ -178,7 +189,7 @@ app.get("/:customListName", function(req, res){  //if we want any list for user 
 
 
 
-app.post("/", function(req, res){
+app.post("/list", function(req, res){
 
   const itemName = req.body.newItem; //body means bodyParser
   const listName = req.body.list;
@@ -189,12 +200,12 @@ app.post("/", function(req, res){
 
   if(listName === "Today"){ //if user wants to save element in default list then just res.redirect to default
     item.save();
-    res.redirect("/");
+    res.redirect("/list");
 }else{                                   //if a user came from a custom list then we are going to add the new item to that list and then redirect that page
   List.findOne({name: listName}, function(err, foundList){    //foundList is singular here cause findOne
     foundList.items.push(item);
     foundList.save();
-    res.redirect("/" + listName);
+    res.redirect("/list" + listName);
   });
 }
 });
@@ -208,13 +219,13 @@ if(listName === "Today"){
   Item.findByIdAndRemove(checkedItemId, function(err){   //findByIdAndRemove() is a method that deletes the item of a particular id when checked
     if(!err){
       console.log("Succesfully deleted checked item");
-      res.redirect("/");
+      res.redirect("/list");
     }
   });
 }else{
   List.findOneAndUpdate({name: listName}, {$pull: {items: {_id: checkedItemId}}}, function(err, foundList){
     if(!err){
-      res.redirect("/" + listName);
+      res.redirect("/list" + listName);
     }
   });
 }
@@ -240,7 +251,7 @@ app.post("/work", function(req, res){
 });
 
 
-app.get('/logout', function (req, res){
+app.get("/logout", function (req, res){
   req.session.destroy(function (err) {
     res.redirect('/'); //Inside a callback… bulletproof!
   });
