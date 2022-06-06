@@ -3,6 +3,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const _ = require("lodash");
+const ejs = require("ejs");
 const session = require("express-session");  //we use const everywhere because we are using esversion:6
 const passport = require("passport");
 const passportLocalMongoose = require("passport-local-mongoose");
