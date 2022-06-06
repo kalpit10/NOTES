@@ -205,7 +205,7 @@ app.post("/list", function(req, res){
   List.findOne({name: listName}, function(err, foundList){    //foundList is singular here cause findOne
     foundList.items.push(item);
     foundList.save();
-    res.redirect("/list" + listName);
+    res.redirect(listName);
   });
 }
 });
@@ -225,7 +225,7 @@ if(listName === "Today"){
 }else{
   List.findOneAndUpdate({name: listName}, {$pull: {items: {_id: checkedItemId}}}, function(err, foundList){
     if(!err){
-      res.redirect("/list" + listName);
+      res.redirect(listName);
     }
   });
 }
