@@ -30,8 +30,7 @@ app.use(passport.session()); //and to also use passport for dealing with the ses
 
 // mongoose.connect("mongodb://localhost:27017/todolistDB", {useNewUrlParser: true}); //useNewUrlParser is written to skip errors that mongodb shows
 mongoose.connect(
-  "mongodb+srv://kalpit07:Nvidiagtx1650@cluster0.vnk2x.mongodb.net/todolistDB?retryWrites=true&w=majority",
-  { useNewUrlParser: true }
+  "mongodb+srv://kalpit07:f9KQazDAz3HEnB5v@cluster0.vnk2x.mongodb.net/test"
 );
 
 //FOR USING BUTTONS FOR GOOGLE, FACEBOOK ETC WHEN LOGIN GO TO SOCIALBUTTONS FOR BOOTSTRAP AND DOWNLOAD THAT ZIP FILE AND DRAG THE FILE OF BOOTSTRAP SOCAIL.CSS IN THE CSS FOLDER.
@@ -73,7 +72,7 @@ passport.use(
       //documentation for passportjs oauth20
       clientID: process.env.CLIENT_ID,
       clientSecret: process.env.CLIENT_SECRET,
-      callbackURL: "https://stormy-depths-00269.herokuapp.com/auth/google/list", //redirected url link that we created in credentials
+      callbackURL: "https://notefy.herokuapp.com/auth/google/list", //redirected url link that we created in credentials
     },
     function (accessToken, refreshToken, profile, cb) {
       //accessToken allows to get data related to that user,refreshToken allows to use the data for a longer period of time and their profile
